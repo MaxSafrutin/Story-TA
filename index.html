@@ -17,37 +17,117 @@
 
   <main class="workspace">
     <section class="panel controls">
+      <section class="workflow-settings">
+        <div class="workflow-title">Режим работы</div>
+        <div class="workflow-switch" role="group" aria-label="Режим работы">
+          <button id="singleModeBtn" class="workflow-option active" type="button">Один автомобиль</button>
+          <button id="batchModeBtn" class="workflow-option" type="button">Несколько автомобилей</button>
+        </div>
+        <div id="batchManager" class="batch-manager" hidden>
+          <p>Редактируется один автомобиль, остальные безопасно хранятся локально. До 7 фото на каждый.</p>
+          <div class="batch-actions">
+            <button id="newBatchVehicleBtn" class="button primary" type="button">＋ Добавить автомобиль</button>
+            <button id="saveBatchVehicleBtn" class="button secondary" type="button">Сохранить текущий</button>
+            <button id="exportBatchBtn" class="button secondary" type="button">Скачать все главные ZIP</button>
+          </div>
+          <div id="batchStatus" class="batch-status">Подборка пока пуста</div>
+          <div id="batchVehicleList" class="batch-vehicle-list"></div>
+        </div>
+      </section>
+
       <label class="field">
         <span>Текст объявления</span>
         <textarea id="sourceText" rows="9" placeholder="🚙 NISSAN JUKE 🚙&#10;✅ 2013&#10;✅ 1.6 БЕНЗИН&#10;...&#10;💸 Цена: 850 000&#10;📱 +7 927 265 17 77"></textarea>
       </label>
       <button class="button parse" id="parseBtn">Разобрать текст</button>
 
+      <details class="editor-settings" open>
+        <summary>Оформление и компоновка</summary>
+        <div class="editor-settings-body">
+          <div class="settings-grid">
+            <label class="control-field"><span>Коллаж на главной</span><select id="collageLayout"><option value="classic">Текущий · акцент слева</option><option value="hero">Главное фото сверху</option><option value="columns">Вертикальный акцент</option><option value="grid">Ровная сетка</option></select></label>
+            <label class="control-field"><span>Фото в коллаже</span><select id="collageCount"><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option></select></label>
+          </div>
+          <label class="control-field"><span>Цветовая палитра</span><select id="palettePreset">
+            <optgroup label="Базовые"><option value="brand">Фирменная красная</option><option value="strictPremium">Строгий премиум</option><option value="urbanDrive">Городской драйв</option><option value="warmComfort">Тёплый комфорт</option></optgroup>
+            <optgroup label="Ранее добавленные"><option value="graphite">Красный + графит</option><option value="navy">Красный + тёмно-синий</option><option value="sand">Красный + песочный</option><option value="teal">Красный + бирюзовый</option><option value="violet">Красный + фиолетовый</option></optgroup>
+            <optgroup label="Новое в продаже"><option value="elegantReserve">Элегантная сдержанность</option><option value="freshStart">Свежий старт</option></optgroup>
+            <optgroup label="Спецскидка"><option value="businessBenefit">Деловая выгода</option><option value="brightAccent">Яркий акцент</option></optgroup>
+            <optgroup label="Срочная продажа"><option value="energyPulse">Энергичный импульс</option><option value="clearSignal">Чёткий сигнал</option></optgroup>
+            <optgroup label="Комиссионная продажа"><option value="transparentDeal">Прозрачная сделка</option><option value="calmConfidence">Спокойная уверенность</option></optgroup>
+            <optgroup label="Продано"><option value="festiveSuccess">Праздничный успех</option><option value="lightCelebration">Лёгкое торжество</option></optgroup>
+            <optgroup label="Дополнительные вайбы"><option value="offroadReliability">Внедорожная надёжность</option><option value="techMinimalism">Технологичный минимализм</option><option value="retroStyle">Ретро-стиль</option><option value="sportPulse">Спортивный импульс</option></optgroup>
+            <option value="custom">Своя палитра</option>
+          </select></label>
+          <div class="color-row">
+            <label><span>Фирменный</span><input id="brandColor" type="color" value="#E53935"></label>
+            <label><span>Доп. акцент</span><input id="accentColor" type="color" value="#FF4D4D"></label>
+            <label><span>Фон</span><input id="backgroundColor" type="color" value="#0A0A0A"></label>
+          </div>
+          <div class="logo-settings">
+            <label class="check-control"><input id="showLogo" type="checkbox" checked><span>Логотип</span></label>
+            <label class="check-control"><input id="showLogoCaption" type="checkbox"><span>Подпись под логотипом</span></label>
+          </div>
+          <label class="control-field logo-caption-field"><span>Текст подписи</span><input id="logoCaption" list="logoCaptionSuggestions" maxlength="80" value="Автомобиль на складе" placeholder="Введите свой вариант"><datalist id="logoCaptionSuggestions"><option value="Автомобиль на складе"><option value="Автомобиль на комиссионной продаже"></datalist></label>
+          <div class="arrival-settings">
+            <label class="check-control"><input id="showArrivalLabel" type="checkbox" checked><span>Показывать надпись над моделью</span></label>
+            <label class="control-field arrival-label-field"><span>Текст надписи</span><input id="arrivalLabel" list="arrivalLabelSuggestions" maxlength="60" value="НОВОЕ ПОСТУПЛЕНИЕ" placeholder="Введите свой вариант"><datalist id="arrivalLabelSuggestions"><option value="НОВОЕ ПОСТУПЛЕНИЕ"><option value="АВТОМОБИЛЬ В НАЛИЧИИ"><option value="СВЕЖЕЕ ПРЕДЛОЖЕНИЕ"><option value="УЖЕ НА СКЛАДЕ"><option value="ГОТОВ К ОСМОТРУ"><option value="АВТОМОБИЛЬ ДНЯ"></datalist></label>
+          </div>
+        </div>
+      </details>
+
+      <section class="status-settings">
+        <label class="sold-switch"><input id="soldMode" type="checkbox"><span class="switch-track" aria-hidden="true"></span><span><strong>Автомобиль продан</strong><small>Переключить сторис в формат успешной сделки</small></span></label>
+        <div class="text-preset-row normal-text-preset"><label class="control-field"><span>Пресет текста</span><select id="textPreset"><option value="default">Новое поступление</option><option value="benefit">Выгодное предложение</option><option value="urgent">Срочная продажа</option><option value="commission">Комиссионная продажа</option><option value="calm">Спокойная универсальная</option><option value="custom">Свои формулировки</option></select></label></div>
+        <div class="sold-fields" id="soldFields">
+          <label class="control-field"><span>Пресет текста «Продано»</span><select id="soldTextPreset"><option value="sold">Продано · новый владелец</option><option value="realized">Реализовано · результат</option><option value="fomo">Продано · лёгкий FOMO</option><option value="custom">Свои формулировки</option></select></label>
+          <div class="grid two"><label class="control-field"><span>Крупный статус</span><input id="soldStatus" maxlength="24" value="ПРОДАНО"></label><label class="control-field"><span>Продан за, дней</span><input id="soldDays" type="number" inputmode="numeric" min="1" max="999" value="10"></label></div>
+          <label class="control-field"><span>Подзаголовок</span><input id="soldSubtitle" maxlength="90" value="Этот автомобиль уже нашёл нового владельца"></label>
+          <label class="control-field"><span>Подпись к сроку</span><input id="soldDurationPrefix" maxlength="40" value="Реализован за"></label>
+          <label class="control-field"><span>Призыв</span><textarea id="soldCta" rows="2" maxlength="180">Не нашли свой автомобиль? Подберём похожий или покажем варианты в наличии</textarea></label>
+        </div>
+      </section>
+
       <div class="grid two">
-        <label class="field"><span>Модель</span><input id="model" maxlength="32" placeholder="NISSAN JUKE"></label>
-        <label class="field"><span>Год</span><input id="year" inputmode="numeric" maxlength="4" placeholder="2013"></label>
+        <label class="field" data-toggle="model"><span>Модель</span><input id="model" maxlength="32" placeholder="NISSAN JUKE"></label>
+        <label class="field" data-toggle="year"><span>Год</span><input id="year" inputmode="numeric" maxlength="4" placeholder="2013"><label class="inline-option"><input id="yearInMileage" type="checkbox"><span>Показать перед пробегом</span></label></label>
       </div>
       <div class="grid two">
-        <label class="field"><span>Пробег</span><input id="mileage" maxlength="18" placeholder="140 000 км"></label>
-        <label class="field"><span>Обычная цена</span><input id="price" maxlength="18" placeholder="950 000 ₽"></label>
+        <label class="field" data-toggle="mileage"><span>Пробег</span><input id="mileage" placeholder="140 000 км"></label>
+        <label class="field" data-toggle="price"><span>Обычная цена</span><input id="price" maxlength="18" placeholder="950 000 ₽"></label>
       </div>
-      <label class="field"><span>Цена со скидкой — необязательно</span><input id="salePrice" maxlength="18" placeholder="850 000 ₽"></label>
-      <label class="field"><span>Вариант приобретения</span><input id="purchaseOption" maxlength="90" list="purchaseSuggestions" value="Наличные · кредит · обмен с вашей/нашей доплатой"><datalist id="purchaseSuggestions"><option value="Наличные · кредит · обмен с вашей/нашей доплатой"><option value="Наличные или кредит"><option value="Обмен с вашей или нашей доплатой"></datalist></label>
-      <label class="field"><span>Характеристики — до 6 строк</span><textarea id="features" rows="5" placeholder="1.6 БЕНЗИН, АВТОМАТ&#10;ИДЕАЛЬНАЯ ТЕХНИКА&#10;БЕЗ ВЛОЖЕНИЙ"></textarea></label>
+      <label class="field" data-toggle="salePrice"><span>Цена со скидкой — необязательно</span><input id="salePrice" maxlength="18" placeholder="850 000 ₽"></label>
+      <label class="field" data-toggle="purchaseOption"><span>Вариант приобретения</span><input id="purchaseOption" maxlength="90" list="purchaseSuggestions" value="Наличные · кредит · обмен с вашей/нашей доплатой"><datalist id="purchaseSuggestions"><option value="Наличные · кредит · обмен с вашей/нашей доплатой"><option value="Наличные или кредит"><option value="Обмен с вашей или нашей доплатой"></datalist></label>
+      <label class="field" data-toggle="features"><span>Характеристики — до 6 строк</span><textarea id="features" rows="5" placeholder="1.6 БЕНЗИН, АВТОМАТ&#10;ИДЕАЛЬНАЯ ТЕХНИКА&#10;БЕЗ ВЛОЖЕНИЙ"></textarea></label>
       <div class="grid two">
-        <label class="field"><span>Место передачи</span><input id="location" maxlength="60" value="Самара · Мирная, 3, корпус 1"></label>
-        <label class="field"><span>Телефон</span><input id="phone" maxlength="24" value="+7 927 265 17 77"></label>
+        <label class="field" data-toggle="location"><span>Место передачи</span><input id="location" maxlength="60" value="Самара · Мирная, 3, корпус 1"></label>
+        <label class="field" data-toggle="phone"><span>Телефон</span><input id="phone" maxlength="24" value="+7 927 265 17 77"></label>
       </div>
-      <label class="field"><span>Призыв</span><input id="cta" maxlength="130" list="ctaSuggestions" value="Не откладывайте: средний срок продажи — 2 недели. Пишите, звоните за подробностями — записывайтесь на осмотр."><datalist id="ctaSuggestions"><option value="Пишите, звоните за подробностями"><option value="Пишите в личку — отвечу подробнее"><option value="Напишите мне — всё расскажу"></datalist></label>
+      <label class="field" data-toggle="cta"><span>Призыв</span><input id="cta" maxlength="130" list="ctaSuggestions" value="Не откладывайте: средний срок продажи — 2 недели. Пишите, звоните за подробностями — записывайтесь на осмотр."><datalist id="ctaSuggestions"><option value="Пишите, звоните за подробностями"><option value="Пишите в личку — отвечу подробнее"><option value="Напишите мне — всё расскажу"></datalist></label>
 
       <div class="upload-row photos-only">
         <label class="upload-box photos">
           <input id="photos" type="file" accept="image/*" multiple hidden>
-          <span class="upload-icon">＋</span><strong>Добавить фото</strong><small>Можно выбрать любое количество</small>
+          <span class="upload-icon">＋</span><strong>Добавить фото</strong><small id="photoStatus">Тяжёлые фото оптимизируются автоматически</small>
         </label>
       </div>
-      <div class="order-help">Перетаскивайте миниатюры для перестановки. Первые шесть образуют коллаж.</div>
+      <div class="order-help">Перетаскивайте миниатюры для перестановки. Первые 3–7 фото образуют коллаж — количество выбирается выше.</div>
       <div id="photoList" class="photo-list"></div>
+
+      <details class="archive-settings" open>
+        <summary>Архив и повторное редактирование</summary>
+        <div class="archive-settings-body">
+          <p class="archive-help">Выберите папку «Готовые сторис». Папка автомобиля с PNG, оптимизированными фото и project.json будет создана в «! Серии сторис одного авто». Копия первого коллажа попадёт в «! Главные сторис».</p>
+          <div class="archive-actions">
+            <button class="button secondary" id="connectFolderBtn" type="button">Подключить «Готовые сторис»</button>
+            <button class="button primary" id="saveArchiveBtn" type="button">Сохранить проект и PNG</button>
+            <button class="button secondary" id="openProjectFolderBtn" type="button">Открыть проект из папки</button>
+            <button class="button secondary" id="downloadProjectBtn" type="button">Скачать JSON проекта</button>
+            <label class="button secondary archive-file-button">Открыть JSON<input id="projectFile" type="file" accept="application/json,.json" hidden></label>
+          </div>
+          <div id="archiveStatus" class="archive-status">Папка пока не подключена</div>
+        </div>
+      </details>
 
       <label class="field promo-picker"><span>Дизайн финальной сторис</span><select id="promoStyle"><option value="1">1. Текущий — преимущества</option><option value="2">2. Быстрая продажа</option><option value="3">3. Обмен автомобиля</option><option value="4">4. Автокредит</option><option value="5">5. Весь склад</option></select></label>
 
