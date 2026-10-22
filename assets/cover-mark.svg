@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="365 162 1318 668"><defs
+     id="defs11">
+    <linearGradient
+       id="red"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#ed1b2f"
+         id="stop6" />
+      <stop
+         offset="1"
+         stop-color="#d31226"
+         id="stop8" />
+    </linearGradient>
+  </defs><g
+       id="mark"
+       fill="url(#red)">
+      <!-- Main T: broad top beam, solid stem, pointed base -->
+      <path
+         d="m 365,162 h 1318 l -88,108 H 1132 V 720 L 1024,830 916,720 V 270 H 453 Z"
+         id="path13" />
+      <!-- Symmetrical supporting wings -->
+      <path
+         d="M 570,354 H 850 V 634 L 766,550 V 474 H 682 Z"
+         id="path15" />
+      <path
+         d="m 1478,354 h -280 v 280 l 84,-84 v -76 h 84 z"
+         id="path17" />
+    </g></svg>

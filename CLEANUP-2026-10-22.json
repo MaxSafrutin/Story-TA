@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-22",
+  "publishedCommit": "5a37731ea98cfa949f54ba60a3dcb2a6df5788b3",
+  "removed": [
+    "Копия проекта до квадратов 2026-10-05",
+    "На гитхабе",
+    "backup-holiday-art-2026-10-21-1792565087692",
+    "backup-manual-holidays-1792509620313",
+    "backup-ui-2026-10-20-1792505123608",
+    "backups",
+    "recovery",
+    "test-support",
+    "consolidate-recovery.py",
+    "install-stage6-price.cjs",
+    "make-compact-recovery.cjs",
+    "make-recovery.cjs",
+    "review-poster.cjs",
+    "square-poster-before-accent.js",
+    "stage6-edit.py",
+    "stage6-price-edit.py",
+    "stage6-left.tmp",
+    "stage6-status.tmp",
+    "Квадрат — первый кадр.png",
+    "Квадраты — пример Pajero.png",
+    "Обложка — пример Pajero.png",
+    "formats-preview.png",
+    "square-editor-mobile.png",
+    "square-editor-preview.png",
+    "HOLIDAY-ART-REPORT.md",
+    "IMPLEMENTATION.md",
+    "README-HISTORY.md",
+    "UI-CLEANUP-REPORT.md",
+    "UX-STAGE2.md",
+    "UX-STAGE3.md",
+    "UX-STAGE4.md",
+    "UX-STAGE5.md",
+    "assets\\vendor\\test.heic",
+    "check-accent.cjs",
+    "check-baseline.cjs",
+    "check-client-format.cjs",
+    "check-compact-recovery.cjs",
+    "check-cover-offline.cjs",
+    "check-cover.cjs",
+    "check-design-audit.cjs",
+    "check-design.cjs",
+    "check-exports.cjs",
+    "check-feed.cjs",
+    "check-fifteen.cjs",
+    "check-formats.cjs",
+    "check-interface-polish.cjs",
+    "check-qr.cjs",
+    "check-security.cjs",
+    "check-square-current.cjs",
+    "check-squares.cjs",
+    "check-stage6-details.cjs",
+    "check-stage6-price.cjs",
+    "check-stage6-working.cjs",
+    "check-stage6.cjs",
+    "check-unified-export.cjs",
+    "check-ux-critical.cjs",
+    "check-ux-legacy.cjs",
+    "check-ux-presets.cjs",
+    "check-ux-stage2.cjs",
+    "check-ux-stage3-touch.cjs",
+    "check-ux-stage3.cjs",
+    "check-ux-stage4-counters.cjs",
+    "check-ux-stage4-interactions.cjs",
+    "check-ux-stage4.cjs",
+    "check-ux-stage5.cjs",
+    "check-ux-visual.cjs",
+    "check-workspace.cjs"
+  ],
+  "files": 1133,
+  "bytes": 1907905390,
+  "preserved": [
+    ".git",
+    "Готовые сторис",
+    "Логотип",
+    "active source and nine acceptance suites"
+  ],
+  "generatedArtifacts": {
+    "directory": "verification",
+    "files": 5074,
+    "bytes": 597876319
+  },
+  "protectedUserFilesVerified": 307,
+  "postCleanupChecks": [
+    {
+      "check": "check-release.cjs",
+      "passed": true,
+      "durationMs": 42239
+    },
+    {
+      "check": "check-cleanup.cjs",
+      "passed": true,
+      "durationMs": 86979
+    },
+    {
+      "check": "check-project.cjs",
+      "passed": true,
+      "durationMs": 16408
+    },
+    {
+      "check": "check-data-protection.cjs",
+      "passed": true,
+      "durationMs": 11052
+    },
+    {
+      "check": "check-manual-holidays.cjs",
+      "passed": true,
+      "durationMs": 16272
+    },
+    {
+      "check": "check-holiday-art.cjs",
+      "passed": true,
+      "durationMs": 57239
+    },
+    {
+      "check": "check-holiday-exports.cjs",
+      "passed": true,
+      "durationMs": 36648
+    },
+    {
+      "check": "check-holiday-edge-cases.cjs",
+      "passed": true,
+      "durationMs": 23878
+    },
+    {
+      "check": "check-hosted.cjs",
+      "passed": true,
+      "durationMs": 11375
+    }
+  ],
+  "liveSiteVerified": "https://maxsafrutin.github.io/Story-TA/"
+}

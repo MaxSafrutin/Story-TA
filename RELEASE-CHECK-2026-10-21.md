@@ -38,3 +38,7 @@ SHA-256 ZIP: 1f5470ed1aeddfb18f945330d20800a2575332b83c489bde683e830ddb640b78
 Для GitHub Pages распакуйте содержимое ZIP в корень выбранной папки публикации. index.html должен находиться в её корне; один ZIP-файл как сайт GitHub Pages не запускается. Ветка/настройки GitHub и публикация не изменялись.
 
 Изменённые рабочие файлы: index.html, startup.js (новый), workspace.js, project-storage.js, project-management.js, workspace.css, service-worker.js, .gitignore, README.md, run-checks.cjs. Добавлен check-release.cjs; check-holiday-art.cjs получил автономный тестовый источник на случай отсутствия личного архива.
+
+## Публикация 22 октября 2026
+
+Рабочая версия опубликована в Story-TA, GitHub Pages проверен. По подтверждённому запросу пользователя старые локальные снимки и результаты проверок удалены; восстановление доступно через историю GitHub. Итог: [PUBLISH-2026-10-22.md](PUBLISH-2026-10-22.md).
