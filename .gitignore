@@ -1,3 +1,15 @@
 Готовые сторис/
 Для примера/
 На гитхабе/
+verification/
+formats-preview.png
+square-editor-preview.png
+square-editor-mobile.png
+recovery/
+node_modules/
+
+# Local release snapshots and historical migration workspaces
+backups/
+backup-*/
+Копия проекта до квадратов 2026-10-05/
+*.tmp

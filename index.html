@@ -1,12 +1,18 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" class="app-loading">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>ТИТАН АВТО — генератор сторис</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="workspace.css">
+  <style>html.app-loading body> :not(#appStartup):not(noscript){display:none!important}#appStartup{min-height:100dvh;display:grid;place-content:center;gap:14px;text-align:center;background:#0b0b0b;color:#ddd;font:15px Arial;padding:24px}html:not(.app-loading) #appStartup{display:none}#appStartup strong{color:#e53935;font-size:20px}</style>
+  <script src="startup.js" defer></script>
 </head>
 <body>
+  <div id="appStartup" role="status" aria-live="polite"><strong>ТИТАН АВТО</strong><span>Загружаем проект…</span></div>
+  <noscript>Для работы генератора включите JavaScript в браузере.</noscript>
   <header class="topbar">
     <a class="brand" href="#" aria-label="Титан Авто"><img src="Логотип/TITAN_AUTO_logo.svg" alt="Титан Авто"></a>
     <div class="top-actions">
@@ -17,6 +23,18 @@
 
   <main class="workspace">
     <section class="panel controls">
+      <nav class="story-tabs" aria-label="Формат сторис">
+        <button class="story-tab active" type="button" data-story-tab="vehicle"><span>Авто</span><small>объявления</small></button>
+        <button class="story-tab" type="button" data-story-tab="client"><span>Покупка</span><small>фото с клиентом</small></button>
+        <button class="story-tab" type="button" data-story-tab="reviews"><span>Отзывы</span><small>скриншоты</small></button>
+        <button class="story-tab" type="button" data-story-tab="proof"><span>Пруфы</span><small>услуги</small></button>
+      </nav>
+
+      <div id="vehicleEditor" class="mode-editor active" data-story-editor="vehicle">
+        <select id="saleStatus" hidden><option value="available">В продаже</option><option value="reserved">Забронирован</option><option value="sold">Продан</option></select>
+        <input id="availableStatusLabel" type="hidden" maxlength="60"><input id="reservedStatusLabel" type="hidden" maxlength="60">
+        <input id="statusTextCustom" type="checkbox" hidden><input id="reservedStatusCustom" type="checkbox" hidden><input id="soldStatusCustom" type="checkbox" hidden>
+        <label class="field" data-toggle="trim"><span>Комплектация</span><input id="trim" maxlength="200" placeholder="Например, Titanium"></label>
       <section class="workflow-settings">
         <div class="workflow-title">Режим работы</div>
         <div class="workflow-switch" role="group" aria-label="Режим работы">
@@ -24,7 +42,7 @@
           <button id="batchModeBtn" class="workflow-option" type="button">Несколько автомобилей</button>
         </div>
         <div id="batchManager" class="batch-manager" hidden>
-          <p>Редактируется один автомобиль, остальные безопасно хранятся локально. До 7 фото на каждый.</p>
+          <p>Редактируется один автомобиль, остальные безопасно хранятся локально. До 15 фото на каждый.</p>
           <div class="batch-actions">
             <button id="newBatchVehicleBtn" class="button primary" type="button">＋ Добавить автомобиль</button>
             <button id="saveBatchVehicleBtn" class="button secondary" type="button">Сохранить текущий</button>
@@ -46,7 +64,7 @@
         <div class="editor-settings-body">
           <div class="settings-grid">
             <label class="control-field"><span>Коллаж на главной</span><select id="collageLayout"><option value="classic">Текущий · акцент слева</option><option value="hero">Главное фото сверху</option><option value="columns">Вертикальный акцент</option><option value="grid">Ровная сетка</option></select></label>
-            <label class="control-field"><span>Фото в коллаже</span><select id="collageCount"><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option></select></label>
+            <label class="control-field"><span>Фото в коллаже</span><select id="collageCount"><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option><option value="9">9 · равные квадраты 3 × 3</option><option value="15">9 блоков · последние два по 4 фото</option></select></label>
           </div>
           <label class="control-field"><span>Цветовая палитра</span><select id="palettePreset">
             <optgroup label="Базовые"><option value="brand">Фирменная красная</option><option value="strictPremium">Строгий премиум</option><option value="urbanDrive">Городской драйв</option><option value="warmComfort">Тёплый комфорт</option></optgroup>
@@ -71,47 +89,48 @@
           <label class="control-field logo-caption-field"><span>Текст подписи</span><input id="logoCaption" list="logoCaptionSuggestions" maxlength="80" value="Автомобиль на складе" placeholder="Введите свой вариант"><datalist id="logoCaptionSuggestions"><option value="Автомобиль на складе"><option value="Автомобиль на комиссионной продаже"></datalist></label>
           <div class="arrival-settings">
             <label class="check-control"><input id="showArrivalLabel" type="checkbox" checked><span>Показывать надпись над моделью</span></label>
-            <label class="control-field arrival-label-field"><span>Текст надписи</span><input id="arrivalLabel" list="arrivalLabelSuggestions" maxlength="60" value="НОВОЕ ПОСТУПЛЕНИЕ" placeholder="Введите свой вариант"><datalist id="arrivalLabelSuggestions"><option value="НОВОЕ ПОСТУПЛЕНИЕ"><option value="АВТОМОБИЛЬ В НАЛИЧИИ"><option value="СВЕЖЕЕ ПРЕДЛОЖЕНИЕ"><option value="УЖЕ НА СКЛАДЕ"><option value="ГОТОВ К ОСМОТРУ"><option value="АВТОМОБИЛЬ ДНЯ"></datalist></label>
+            <label class="control-field arrival-label-field"><span>Текст надписи</span><input id="arrivalLabel" list="arrivalLabelSuggestions" maxlength="60" value="В ПРОДАЖЕ" placeholder="Введите свой вариант"><datalist id="arrivalLabelSuggestions"><option value="НОВОЕ ПОСТУПЛЕНИЕ"><option value="АВТОМОБИЛЬ В НАЛИЧИИ"><option value="СВЕЖЕЕ ПРЕДЛОЖЕНИЕ"><option value="УЖЕ НА СКЛАДЕ"><option value="ГОТОВ К ОСМОТРУ"><option value="АВТОМОБИЛЬ ДНЯ"></datalist></label>
           </div>
         </div>
       </details>
 
       <section class="status-settings">
         <label class="sold-switch"><input id="soldMode" type="checkbox"><span class="switch-track" aria-hidden="true"></span><span><strong>Автомобиль продан</strong><small>Переключить сторис в формат успешной сделки</small></span></label>
-        <div class="text-preset-row normal-text-preset"><label class="control-field"><span>Пресет текста</span><select id="textPreset"><option value="default">Новое поступление</option><option value="benefit">Выгодное предложение</option><option value="urgent">Срочная продажа</option><option value="commission">Комиссионная продажа</option><option value="calm">Спокойная универсальная</option><option value="custom">Свои формулировки</option></select></label></div>
+        <div class="text-preset-row normal-text-preset"><label class="control-field"><span>Пресет текста</span><select id="textPreset"><option value="default">В продаже</option><option value="benefit">Выгодное предложение</option><option value="urgent">Срочная продажа</option><option value="commission">Комиссионная продажа</option><option value="calm">Спокойная универсальная</option><option value="custom">Свои формулировки</option></select></label></div>
         <div class="sold-fields" id="soldFields">
           <label class="control-field"><span>Пресет текста «Продано»</span><select id="soldTextPreset"><option value="sold">Продано · новый владелец</option><option value="realized">Реализовано · результат</option><option value="fomo">Продано · лёгкий FOMO</option><option value="custom">Свои формулировки</option></select></label>
           <div class="grid two"><label class="control-field"><span>Крупный статус</span><input id="soldStatus" maxlength="24" value="ПРОДАНО"></label><label class="control-field"><span>Продан за, дней</span><input id="soldDays" type="number" inputmode="numeric" min="1" max="999" value="10"></label></div>
           <label class="control-field"><span>Подзаголовок</span><input id="soldSubtitle" maxlength="90" value="Этот автомобиль уже нашёл нового владельца"></label>
           <label class="control-field"><span>Подпись к сроку</span><input id="soldDurationPrefix" maxlength="40" value="Реализован за"></label>
-          <label class="control-field"><span>Призыв</span><textarea id="soldCta" rows="2" maxlength="180">Не нашли свой автомобиль? Подберём похожий или покажем варианты в наличии</textarea></label>
+          <label class="control-field"><span>Призыв</span><textarea id="soldCta" rows="2" maxlength="180">Не успели? Смотрите, что ещё есть 👆</textarea></label>
         </div>
       </section>
 
       <div class="grid two">
-        <label class="field" data-toggle="model"><span>Модель</span><input id="model" maxlength="32" placeholder="NISSAN JUKE"></label>
-        <label class="field" data-toggle="year"><span>Год</span><input id="year" inputmode="numeric" maxlength="4" placeholder="2013"><label class="inline-option"><input id="yearInMileage" type="checkbox"><span>Показать перед пробегом</span></label></label>
+        <label class="field" data-toggle="model"><span>Модель</span><input id="model" maxlength="100" placeholder="NISSAN JUKE"></label>
+        <label class="field" data-toggle="year"><span>Год</span><input id="year" inputmode="numeric" maxlength="4" placeholder="2013"><input id="yearInMileage" type="checkbox" checked hidden></label>
       </div>
       <div class="grid two">
-        <label class="field" data-toggle="mileage"><span>Пробег</span><input id="mileage" placeholder="140 000 км"></label>
+        <label class="field" data-toggle="volume"><span>Объём мотора</span><input id="volume" maxlength="40"></label><label class="field" data-toggle="fuel"><span>Тип топлива</span><input id="fuel" maxlength="40"></label><label class="field" data-toggle="drive"><span>Привод</span><input id="drive" maxlength="40"></label><label class="field" data-toggle="gearbox"><span>Тип коробки</span><input id="gearbox" maxlength="40"></label><label class="field" data-toggle="power"><span>Мощность, л.с.</span><input id="power" maxlength="40"></label><label class="check-control"><input id="specIcons" type="checkbox" checked><span>Микроиконки</span><input id="specIconColor" type="color" value="#E53935" aria-label="Цвет микроиконок" title="Цвет микроиконок"><input id="specIconLegacy" type="checkbox" hidden></label><label class="field" data-toggle="mileage"><span>Пробег</span><input id="mileage" placeholder="140 000 км"></label>
         <label class="field" data-toggle="price"><span>Обычная цена</span><input id="price" maxlength="18" placeholder="950 000 ₽"></label>
       </div>
       <label class="field" data-toggle="salePrice"><span>Цена со скидкой — необязательно</span><input id="salePrice" maxlength="18" placeholder="850 000 ₽"></label>
       <label class="field" data-toggle="purchaseOption"><span>Вариант приобретения</span><input id="purchaseOption" maxlength="90" list="purchaseSuggestions" value="Наличные · кредит · обмен с вашей/нашей доплатой"><datalist id="purchaseSuggestions"><option value="Наличные · кредит · обмен с вашей/нашей доплатой"><option value="Наличные или кредит"><option value="Обмен с вашей или нашей доплатой"></datalist></label>
-      <label class="field" data-toggle="features"><span>Характеристики — до 6 строк</span><textarea id="features" rows="5" placeholder="1.6 БЕНЗИН, АВТОМАТ&#10;ИДЕАЛЬНАЯ ТЕХНИКА&#10;БЕЗ ВЛОЖЕНИЙ"></textarea></label>
+      <label class="field" data-toggle="features"><span>Преимущества — до 6 строк</span><textarea id="features" rows="5" placeholder="1 ВЛАДЕЛЕЦ&#10;ИДЕАЛЬНАЯ ТЕХНИКА&#10;БЕЗ ВЛОЖЕНИЙ"></textarea></label>
       <div class="grid two">
         <label class="field" data-toggle="location"><span>Место передачи</span><input id="location" maxlength="60" value="Самара · Мирная, 3, корпус 1"></label>
         <label class="field" data-toggle="phone"><span>Телефон</span><input id="phone" maxlength="24" value="+7 927 265 17 77"></label>
       </div>
-      <label class="field" data-toggle="cta"><span>Призыв</span><input id="cta" maxlength="130" list="ctaSuggestions" value="Не откладывайте: средний срок продажи — 2 недели. Пишите, звоните за подробностями — записывайтесь на осмотр."><datalist id="ctaSuggestions"><option value="Пишите, звоните за подробностями"><option value="Пишите в личку — отвечу подробнее"><option value="Напишите мне — всё расскажу"></datalist></label>
+      <label class="field" data-toggle="cta"><span>Призыв</span><textarea id="cta" rows="3" maxlength="200">Не откладывайте! Средний срок реализации 2 недели.
+Проходите по ссылке за ценой и подробностями 👆</textarea><datalist id="ctaSuggestions"><option value="Пишите, звоните за подробностями"><option value="Пишите в личку — отвечу подробнее"><option value="Напишите мне — всё расскажу"></datalist></label>
 
-      <div class="upload-row photos-only">
+      <section id="holidaySettings"><label class="check-control"><input id="holidayDecor" type="checkbox">Праздничное оформление</label><label class="field"><span>Праздник</span><select id="holidayChoice"><option value="auto">Автоматически · по календарю Самары</option></select></label><p id="holidayStatus" role="status"></p></section><section id="channelSettings"><h3>Каналы · QR-коды</h3><label class="field"><span>Telegram-канал</span><input id="channelTelegram" type="url" maxlength="500" value="https://t.me/titan_auto_63"></label><label class="check-control"><input id="showTelegramQR" type="checkbox">Показывать QR Telegram</label><label class="field"><span>Max канал</span><input id="channelMax" type="url" maxlength="500" value="https://max.ru/channel_TITAN_AUTO"></label><label class="check-control"><input id="showMaxQR" type="checkbox">Показывать QR Max</label><p id="channelWarning" role="status"></p></section><div class="upload-row photos-only">
         <label class="upload-box photos">
-          <input id="photos" type="file" accept="image/*" multiple hidden>
+          <input id="photos" type="file" accept="image/*,.heic,.heif" multiple hidden>
           <span class="upload-icon">＋</span><strong>Добавить фото</strong><small id="photoStatus">Тяжёлые фото оптимизируются автоматически</small>
         </label>
       </div>
-      <div class="order-help">Перетаскивайте миниатюры для перестановки. Первые 3–7 фото образуют коллаж — количество выбирается выше.</div>
+      <div class="order-help">Перетаскивайте миниатюры для перестановки. Первые 1–15 фото образуют коллаж — количество выбирается выше.</div>
       <div id="photoList" class="photo-list"></div>
 
       <details class="archive-settings" open>
@@ -151,7 +170,7 @@
           </div>
 
           <label class="field"><span>Приглашение посмотреть склад</span><input id="promoStockTitle" maxlength="70" value="ХОТИТЕ ПОСМОТРЕТЬ ВЕСЬ СКЛАД?"></label>
-          <label class="field"><span>Telegram-канал</span><input id="promoTelegram" maxlength="70" value="t.me/perekupshiy"></label>
+          <label class="field"><span>Telegram-канал</span><input id="promoTelegram" maxlength="70" value="https://t.me/titan_auto_63"></label>
           <label class="field"><span>Строка про Авито</span><input id="promoAvito" maxlength="100" value="Официальный партнёр Авито · весь склад ТИТАН-АВТО"></label>
           <label class="field"><span>Слоган</span><input id="promoSlogan" maxlength="70" value="ВЫГОДНЕЕ. БЫСТРЕЕ. СПОКОЙНЕЕ."></label>
           <label class="field"><span>Финальный призыв</span><input id="promoContact" maxlength="90" value="Пишите или звоните — покажем варианты"></label>
@@ -168,8 +187,44 @@
         <label class="field"><span>Метка</span><input id="creditKicker" maxlength="50" value="АВТОМОБИЛЬ МОЖЕТ БЫТЬ БЛИЖЕ"></label><label class="field"><span>Заголовок</span><input id="creditTitle" maxlength="55" value="ПОМОЖЕМ С ПОКУПКОЙ В КРЕДИТ"></label><label class="field"><span>Подзаголовок</span><input id="creditSubtitle" maxlength="100" value="Подберём понятный вариант под вашу ситуацию"></label><label class="field"><span>Преимущество 1</span><input id="creditPoint1" maxlength="65" value="Собственные кредитные специалисты"></label><label class="field"><span>Преимущество 2</span><input id="creditPoint2" maxlength="65" value="Несколько банков-партнёров"></label><label class="field"><span>Преимущество 3</span><input id="creditPoint3" maxlength="65" value="Решение без лишних поездок"></label><label class="field"><span>Призыв</span><input id="creditCta" maxlength="80" value="Напишите — предварительно рассчитаем платёж"></label>
       </div></details>
       <details class="promo-settings" data-promo-panel="5"><summary>Тексты: весь склад</summary><div class="promo-settings-body">
-        <label class="field"><span>Метка</span><input id="stockKicker" maxlength="50" value="НЕ НАШЛИ СВОЙ ВАРИАНТ?"></label><label class="field"><span>Заголовок</span><input id="stockTitle" maxlength="55" value="ПОСМОТРИТЕ ВЕСЬ СКЛАД ТИТАН АВТО"></label><label class="field"><span>Подзаголовок</span><input id="stockSubtitle" maxlength="100" value="Автомобили разных марок, классов и бюджетов — в наличии"></label><label class="field"><span>Канал</span><input id="stockTelegram" maxlength="70" value="Telegram: t.me/perekupshiy"></label><label class="field"><span>Объявления</span><input id="stockAvito" maxlength="90" value="Официальный партнёр Авито · весь склад ТИТАН-АВТО"></label><label class="field"><span>Призыв</span><input id="stockCta" maxlength="80" value="Напишите, какой автомобиль ищете"></label>
+        <label class="field"><span>Метка</span><input id="stockKicker" maxlength="50" value="НЕ НАШЛИ СВОЙ ВАРИАНТ?"></label><label class="field"><span>Заголовок</span><input id="stockTitle" maxlength="55" value="ПОСМОТРИТЕ ВЕСЬ СКЛАД ТИТАН АВТО"></label><label class="field"><span>Подзаголовок</span><input id="stockSubtitle" maxlength="100" value="Автомобили разных марок, классов и бюджетов — в наличии"></label><label class="field"><span>Канал</span><input id="stockTelegram" maxlength="70" value="https://t.me/titan_auto_63"></label><label class="field"><span>Объявления</span><input id="stockAvito" maxlength="90" value="Официальный партнёр Авито · весь склад ТИТАН-АВТО"></label><label class="field"><span>Призыв</span><input id="stockCta" maxlength="80" value="Напишите, какой автомобиль ищете"></label>
       </div></details>
+      </div>
+
+      <section class="mode-editor special-editor" data-story-editor="client" aria-labelledby="clientEditorTitle">
+        <label class="field" id="clientFormatField"><span>Формат поздравления</span><select id="clientFormat"><option value="story">Вертикальный 9:16 · Telegram / Max</option><option value="square">Квадрат 1:1 · отзывы Авито</option></select><small>1080 × 1920 или 1080 × 1080. Кадрирование сохраняется отдельно.</small></label>
+        <div class="editor-intro"><span class="eyebrow">УСПЕШНАЯ СДЕЛКА</span><h2 id="clientEditorTitle">Фото с <span>клиентом</span></h2><p>Добавьте вертикальный снимок — подложка и текст будут наложены автоматически.</p></div>
+        <div class="special-fields">
+          <label class="field"><span>Метка</span><input id="clientKicker" maxlength="48" value="СДЕЛКА ЗАВЕРШЕНА"></label>
+          <label class="field"><span>Главный текст</span><textarea id="clientTitle" rows="2" maxlength="72">ПОЗДРАВЛЯЕМ С ПОКУПКОЙ!</textarea></label>
+          <label class="field"><span>Дополнительный текст</span><textarea id="clientSubtitle" rows="2" maxlength="130">Спасибо, что доверили нам выбор автомобиля</textarea></label>
+          <label class="sold-switch compact-switch"><input id="clientShowModel" type="checkbox"><span class="switch-track" aria-hidden="true"></span><span><strong>Добавить марку и модель</strong><small>По умолчанию поздравление универсальное</small></span></label>
+          <label class="field conditional-field" id="clientModelField"><span>Марка и модель</span><input id="clientModel" maxlength="42" placeholder="например, VOLKSWAGEN POLO"></label>
+          <label class="field"><span>Финальная строка</span><input id="clientFooter" maxlength="76" value="Счастливых дорог и ярких впечатлений!"></label>
+        </div>
+        <label class="upload-box special-upload"><input id="clientPhotos" type="file" accept="image/*,.heic,.heif" hidden><span class="upload-icon">＋</span><strong>Добавить фото с клиентом</strong><small>Лучше вертикальное фото 9:16</small></label>
+        <div class="special-photo-list" data-special-list="client"></div>
+      </section>
+
+      <section class="mode-editor special-editor" data-story-editor="reviews" aria-labelledby="reviewsEditorTitle">
+        <div class="editor-intro"><span class="eyebrow">ДОВЕРИЕ КЛИЕНТОВ</span><h2 id="reviewsEditorTitle">Скрины <span>отзывов</span></h2><p>Добавьте до трёх скриншотов. Генератор сам соберёт их в единую сторис.</p></div>
+        <label class="field"><span>Заголовок</span><input id="reviewsTitle" maxlength="44" value="ВАШИ ОТЗЫВЫ"></label>
+        <label class="field"><span>Подзаголовок</span><input id="reviewsSubtitle" maxlength="100" value="Ваши слова — лучшее подтверждение нашей работы"></label>
+        <label class="field"><span>Финальная строка</span><input id="reviewsFooter" maxlength="72" value="СПАСИБО ЗА ОБРАТНУЮ СВЯЗЬ!"></label>
+        <label class="upload-box special-upload"><input id="reviewPhotos" type="file" accept="image/*,.heic,.heif" multiple hidden><span class="upload-icon">＋</span><strong>Добавить скрины отзывов</strong><small>До 3 скриншотов</small></label>
+        <div class="special-photo-list" data-special-list="reviews"></div>
+      </section>
+
+      <section class="mode-editor special-editor" data-story-editor="proof" aria-labelledby="proofEditorTitle">
+        <div class="editor-intro"><span class="eyebrow">ПРУФ УСЛУГИ</span><h2 id="proofEditorTitle">Комиссионная <span>продажа</span></h2><p>Фото автосалона или автомобиля с понятными аргументами услуги.</p></div>
+        <label class="field"><span>Надзаголовок</span><input id="proofKicker" maxlength="54" value="ПРОДАДИМ ВАШ АВТОМОБИЛЬ"></label>
+        <label class="field"><span>Главный заголовок</span><textarea id="proofTitle" rows="2" maxlength="72">БЫСТРО, УДОБНО И ВЫГОДНО!</textarea></label>
+        <label class="field"><span>Название услуги</span><textarea id="proofService" rows="2" maxlength="90">ПОСТАНОВКА АВТО НА КОМИССИОННУЮ ПРОДАЖУ</textarea></label>
+        <div class="grid two proof-points"><label class="field"><span>Пункт 1</span><input id="proofPoint1" maxlength="54" value="Профессиональный фотоконтент"></label><label class="field"><span>Пункт 2</span><input id="proofPoint2" maxlength="54" value="Грамотное продвижение"></label><label class="field"><span>Пункт 3</span><input id="proofPoint3" maxlength="54" value="Переговоры с покупателями"></label><label class="field"><span>Пункт 4</span><input id="proofPoint4" maxlength="54" value="Полное сопровождение сделки"></label></div>
+        <label class="field"><span>Призыв</span><input id="proofCta" maxlength="90" value="Оставьте заявку — рассчитаем условия продажи"></label>
+        <label class="upload-box special-upload"><input id="proofPhotos" type="file" accept="image/*,.heic,.heif" hidden><span class="upload-icon">＋</span><strong>Добавить фото</strong><small>Автосалон, автомобиль или процесс сделки</small></label>
+        <div class="special-photo-list" data-special-list="proof"></div>
+      </section>
     </section>
 
     <section class="preview-area">
@@ -178,12 +233,54 @@
         <div class="preview-nav"><button id="prevBtn" aria-label="Предыдущее фото">←</button><span id="pageCount">1 / 1</span><button id="nextBtn" aria-label="Следующее фото">→</button></div>
       </div>
       <div class="phone-shell"><canvas id="story" width="1080" height="1920"></canvas></div>
-      <p class="hint">Нажмите нужную ячейку коллажа и двигайте фото. Колесо меняет масштаб.</p>
+      <p class="hint" id="previewHint">Нажмите нужную ячейку коллажа и двигайте фото. Колесо меняет масштаб.</p>
       <button class="button primary mobile-download" id="downloadBtnBottom">Скачать эту сторис</button>
     </section>
   </main>
   <div id="toast" role="status"></div>
   <script src="logo-data.js"></script>
+  <script src="shared-vehicle.js"></script>
+  <script src="safety.js"></script>
+  <script src="assets/vendor/heic2any.js"></script>
+  <script src="vehicle-design.js"></script>
+  <script src="assets/holidays/art-data-v2.js"></script>
+  <script src="assets/fonts/holiday-script-data.js"></script>
+  <script src="holiday-art.js"></script>
+  <script src="holiday-calendar.js"></script>
   <script src="app.js"></script>
+  <script src="square-poster.js"></script>
+  <script src="squares.js"></script>
+  <script src="cover-logo-data.js"></script>
+  <script src="cover-render.js"></script>
+  <script src="cover-editor.js"></script>
+  <script src="emoji-data.js"></script>
+  <script src="formats.js"></script>
+  <script src="vehicle-sync.js"></script><script src="operations.js"></script>
+  <script src="project-state.js"></script>
+  <script src="photo-library.js"></script>
+  <script src="project-storage.js"></script>
+  <script src="assets/vendor/qrcodegen.js"></script>
+  <script src="point-up-data.js"></script>
+  <script src="publication-links.js"></script>
+  <script src="proof-editor.js"></script>
+  <script src="workspace.js"></script>
+  <script src="project-export.js"></script>
+  <script src="material-content.js"></script>
+  <script src="editor-tabs.js"></script>
+  <script src="format-photo-selection.js"></script>
+  <script src="workspace-interactions.js"></script>
+  <script src="project-management.js"></script>
+  <script src="media-sync.js"></script>
+  <script src="vehicle-status.js"></script>
+  <script src="simple-preview.js"></script>
+  <script src="preview-editor.js"></script>
+  <script src="preview-download.js"></script>
+  <script src="publication-exchange.js"></script>
+  <script src="trim-visibility.js"></script>
+  <script src="holiday-download.js"></script>
+  <script src="interface-cleanup.js"></script>
+  <script src="offline-site.js"></script>
+
+<script id="titan-exchange-story-v1" src="titan-packet-exchange.js"></script>
 </body>
 </html>

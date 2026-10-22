@@ -1,0 +1,6 @@
+const fs=require('fs'),path=require('path'),{spawnSync}=require('child_process');
+const checks=['check-release.cjs','check-cleanup.cjs','check-project.cjs','check-data-protection.cjs','check-manual-holidays.cjs','check-holiday-art.cjs','check-holiday-exports.cjs','check-holiday-edge-cases.cjs','check-hosted.cjs'];
+const resume=process.argv.includes('--resume'),results=[];fs.mkdirSync('verification',{recursive:true});
+const previous=resume&&fs.existsSync('verification/release-check-results.json')?JSON.parse(fs.readFileSync('verification/release-check-results.json')).results:[];
+for(const check of checks){const passed=previous.find(v=>v.check===check&&v.passed);if(passed){results.push(passed);continue}const start=Date.now(),result=spawnSync(process.execPath,[check],{encoding:'utf8',env:process.env,timeout:300000,maxBuffer:8*1024*1024});const output=(result.stdout||'')+(result.stderr||'');results.push({check,passed:result.status===0,durationMs:Date.now()-start,output});console.log(output.trim());fs.writeFileSync('verification/release-check-results.json',JSON.stringify({finishedAt:new Date().toISOString(),resumed:resume,results},null,2));if(result.status!==0){console.error('FAILED:',check,result.error?.message||'');process.exit(1)}}
+console.log(`PASS ${results.length} verification suites`);

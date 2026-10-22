@@ -1,0 +1,17 @@
+/* Local QR rendering; no requests are made by the application. */
+(()=>{
+ const cache=new Map(),fire=new Image(),finger=new Image();fire.src=TITAN_EMOJI_DATA.fire;finger.src=TITAN_POINT_UP_DATA;
+ const emojiReady=Promise.all([fire,finger].map(im=>im.decode().catch(()=>{})));
+ function qr(value){let result=cache.get(value);if(!result){const url=new URL(value);if(!['https:','http:'].includes(url.protocol))throw Error('Укажите ссылку https://');result=qrcodegen.QrCode.encodeText(value,qrcodegen.QrCode.Ecc.MEDIUM);cache.set(value,result)}return result}
+ function links(){return [['channelTelegram','showTelegramQR','Telegram'],['channelMax','showMaxQR','Max']].filter(([,enabled])=>$(enabled).checked).map(([id,,name])=>({name,url:$(id).value.trim()}))}
+ function validate(){for(const l of links())qr(l.url)}
+ function draw(g,w,h){const active=links();if(!active.length)return;g.save();const target=Math.max(112,Math.round(Math.min(w*.15,h*.15))),gap=Math.round(w*.02),pad=Math.round(w*.067);let x=w-pad-active.length*target-(active.length-1)*gap,y=Math.round(h*.04);for(const l of active){try{const code=qr(l.url),step=Math.max(2,Math.floor(target/(code.size+8))),size=(code.size+8)*step;g.fillStyle='#fff';g.fillRect(x,y,size,size);g.fillStyle='#000';for(let row=0;row<code.size;row++)for(let col=0;col<code.size;col++)if(code.getModule(col,row))g.fillRect(x+(col+4)*step,y+(row+4)*step,step,step);g.font=`600 ${Math.max(14,Math.round(w/1080*17))}px Inter`;g.fillStyle='#fff';g.fillText(l.name,x,y+size+22*w/1080)}catch(e){/* Invalid links are reported by the editor/export validation. */}x+=target+gap}g.restore()}
+ function status(g,raw,x,y,size,color,width,flames){g.fillStyle=color;let text=raw.toUpperCase();if(!flames||text!=='В ПРОДАЖЕ'||!fire.naturalWidth)return false;g.font=`700 ${size}px Inter`;const es=size*1.05,span=g.measureText(text).width+es*2+size*.65,k=Math.min(1,width/span);g.save();g.translate(x,y);g.scale(k,k);g.drawImage(fire,0,-es*.85,es,es);g.fillText(text,es+size*.3,0);g.drawImage(fire,span-es,-es*.85,es,es);g.restore();return true}
+ function text(g,value,x,y,width,step,max=2){const paragraphs=String(value).split(/\r?\n/);let row=0;for(const p of paragraphs){const pointer=p.includes('👆'),clean=p.replace(/👆/gu,'').trim(),space=pointer?step:0;const words=clean.split(/\s+/).filter(Boolean);let line='';for(let i=0;i<words.length;i++){const next=line?line+' '+words[i]:words[i];if(line&&g.measureText(next).width>width-space&&row<max-1){g.fillText(line,x,y+row++*step);line=words[i]}else line=next}if(row>=max)break;while(g.measureText(line).width>width-space&&line.length)line=line.slice(0,-1);g.fillText(line,x,y+row*step);if(pointer&&finger.naturalWidth){const s=step*.85;g.drawImage(finger,x+g.measureText(line).width+4,y+row*step-s*.85,s,s)}row++}}
+ function ready(){return emojiReady}
+ window.TitanPublication={draw,status,text,validate,ready,qr};
+ const priorDraw=window.draw;window.draw=function(){priorDraw();if(state.contentMode!=='vehicle'||isPromoPage())draw(ctx,1080,1920)};
+ const priorReady=TitanFormats.ready;TitanFormats.ready=async()=>{await priorReady();await ready();validate()};
+ for(const id of ['channelTelegram','channelMax','showTelegramQR','showMaxQR'])$(id).addEventListener('input',()=>{try{validate();$('channelWarning').textContent=''}catch(e){$('channelWarning').textContent=e.message}save();draw()});
+ ready().then(()=>draw());
+})();
