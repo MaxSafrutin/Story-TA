@@ -4,6 +4,8 @@ window.TitanAppReady=(async()=>{
   if(!window.TitanWorkspace||!window.TitanProjectReady)throw Error('Не удалось загрузить модули приложения');
   await Promise.all([TitanProjectReady,document.fonts.ready,window.TitanHolidayArt?.ready()]);
   $('specIcons').checked=true;
+  $('specIconColor').value='#E53935';
+  $('specIconLegacy').checked=false;
   document.documentElement.classList.remove('app-loading');
   await new Promise(resolve=>requestAnimationFrame(()=>{TitanWorkspace.refresh();draw();window.TitanSimplePreview?.fit();resolve()}));
   window.dispatchEvent(new Event('titan-app-ready'));return true;
